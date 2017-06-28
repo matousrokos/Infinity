@@ -1,5 +1,3 @@
-# Infinity
-
 <h1>Pexip Infinity in Azure</h1>
 
 Button below deploys whole Pexip Infinity solution to Azure. That includes:

@@ -1,0 +1,36 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "pexipMGMTNodeAdminUserName": {
+      "value": "matous"
+    },
+    "pexipMGMTNodeAdminPassword": {
+      "value": "P@$$word1234"
+    },
+    "virtualNetworkLocation": {
+      "value": "westeurope"
+    },
+    "virtualNetworkResourceGroup": {
+      "value": "PexipInfinity"
+    },
+    "pexipConfNodeCount": {
+      "value": 2
+    },
+    "pexipConfNodeAdminUserName": {
+      "value": "matous"
+    },
+    "pexipConfNodeAdminPassword": {
+      "value": "P@$$word1234"
+    },
+    "virtualNetworkName": {
+      "value": "vNET"
+    },
+    "pexipMGMTNodeSubnetName": {
+      "value": "default"
+    },
+    "pexipConfNodeSubetName": {
+      "value": "default"
+    }
+  }
+}

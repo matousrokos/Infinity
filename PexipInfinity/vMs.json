@@ -2,6 +2,26 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "virtualNetworkName": {
+      "type": "string"
+    },
+    "virtualNetworkLocation": {
+      "type": "string",
+      "allowedValues": [
+        "West Europe",
+        "North Europe",
+        "West US",
+        "West US 2",
+        "East US",
+        "East US 2"
+      ]
+    },
+    "virtualNetworkResourceGroup": {
+      "type": "string"
+    },
+    "pexipMGMTNodeVHDUri": {
+      "type": "string"
+    },
     "pexipMGMTNodeAdminUserName": {
       "type": "string",
       "minLength": 1
@@ -10,20 +30,14 @@
       "type": "securestring",
       "minLength": 12
     },
-    "virtualNetworkName": {
-      "type": "string"
-    },
-    "virtualNetworkLocation": {
-      "type": "string"
-    },
-    "virtualNetworkResourceGroup": {
-      "type": "string"
-    },
     "pexipMGMTNodeSubnetName": {
       "type": "string"
     },
+    "pexipConfNodeVHDUri": {
+      "type": "string"
+    },
     "pexipConfNodeSubetName": {
-      "type": "string"  
+      "type": "string"
     },
     "pexipConfNodeCount": {
       "type": "int"
@@ -38,7 +52,6 @@
     }
   },
   "variables": {
-    "MGMTOsDiskVhdUri": "https://pexipimages.blob.core.windows.net/images/pexip-infinity-15-0-0-35724-0-0-management-node.vhd",
     "pexipMGMTNodeImageName": "MGMTNodeImage",
     "pexipMGMTNodeName": "PxpMGMTNode",
     "pexipMGMTNodeVmSize": "Standard_D2_v2",
@@ -46,7 +59,6 @@
     "pexipMGMTNodeSubnetRef": "[concat(variables('vNETID'), '/subnets/', parameters('pexipMGMTNodeSubnetName'))]",
     "pexipMGMTNodeNicName": "[concat(variables('pexipMGMTNodeName'), '-NIC')]",
     "pexipConfAVSName": "PxpConfAVSet",
-    "ConfNodeOsDiskVhdUri": "https://pexipimages.blob.core.windows.net/images/pexip-infinity-15-0-0-35724-0-0-conferencing-node.vhd",
     "pexipConfNodeImageName": "ConfNodeImage",
     "pexipConfNodeName": "PxpConfNode",
     "pexipConfNodeOSDiskName": "pexipConfNodeOSDisk",
@@ -66,7 +78,7 @@
           "osDisk": {
             "osType": "Linux",
             "osState": "Generalized",
-            "blobUri": "[variables('MGMTOsDiskVhdUri')]",
+            "blobUri": "[parameters('pexipMGMTNodeVHDUri')]",
             "storageAccountType": "Standard_LRS"
           }
         }
@@ -139,7 +151,7 @@
           "osDisk": {
             "osType": "Linux",
             "osState": "Generalized",
-            "blobUri": "[variables('ConfNodeOsDiskVhdUri')]",
+            "blobUri": "[parameters('pexipConfNodeVHDUri')]",
             "storageAccountType": "Standard_LRS"
           }
         }

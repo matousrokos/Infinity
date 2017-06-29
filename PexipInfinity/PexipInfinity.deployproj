@@ -25,8 +25,7 @@
   <Import Condition=" Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets') " Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets" />
   <!-- vertag<:>end -->
   <ItemGroup>
-    <Content Include="azuredeploy.json" />
-    <Content Include="azuredeploy.parameters.json" />
+    <None Include="azuredeploy.json" />
     <None Include="azuredeploy.parametersTemp.json" />
     <None Include="vMs.json" />
     <None Include="netwok.json" />

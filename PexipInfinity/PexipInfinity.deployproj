@@ -34,7 +34,7 @@
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
-    <None Include="network+VPN.json" />
+    <None Include="network-VPN.json" />
     <None Include="networkOnly.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />

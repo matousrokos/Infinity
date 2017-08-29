@@ -34,19 +34,19 @@
     }
   },
   "variables": {
-    "networkDeploymentTemplateFileURI": "",
-    "vMsDeploymentTemplateFileURI": "",
+    "networkDeploymentScenarioURI": "[concat('https://raw.githubusercontent.com/matousrokos/Infinity/master/PexipInfinity/', parameters('networkingScenario'),'.json')]",
+    "vMsDeploymentScenarioURI": "[concat('https://raw.githubusercontent.com/matousrokos/Infinity/master/PexipInfinity/', parameters('conferenceNodeScenario'),'.json')]",
     "templateAPIVersion": "2017-05-10"
   },
   "resources": [
     {
       "name": "networkDeployment",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('networkDeploymentTemplateFileURI')]",
+      "apiVersion": "[variables('templateAPIVersion')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('networkDeploymentTemplateFileURI')]",
+          "uri": "[variables('networkDeploymentScenarioURI')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -57,12 +57,12 @@
     {
       "name": "vMsDeployment",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
+      "apiVersion": "[variables('templateAPIVersion')]",
       "dependsOn": "Microsoft.Resources/deployments/networkDeployment",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('vMsDeploymentTemplateFileURI')]",
+          "uri": "[variables('vMsDeploymentScenarioURI')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

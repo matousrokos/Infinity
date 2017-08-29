@@ -1,0 +1,109 @@
+﻿{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "azureVNetAddressPrefix": {
+            "type": "string",
+            "defaultValue": "10.3.0.0/16",
+            "metadata": {
+                "description": "CIDR block representing the address space of the Azure VNet"
+            }
+        },
+        "subnetPrefix": {
+            "type": "string",
+            "defaultValue": "10.3.1.0/24",
+            "metadata": {
+                "description": "CIDR block for VM subnet, subset of azureVNetAddressPrefix address space"
+            }
+        },
+        "gatewaySubnetPrefix": {
+            "type": "string",
+            "defaultValue": "10.3.200.0/29",
+            "metadata": {
+                "description": "CIDR block for gateway subnet, subset of azureVNetAddressPrefix address space"
+            }
+        }
+    },
+  "variables": {
+    "virtualNetworkName": "PexipVNET",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+    "serverSubnetName": "PexipServers",
+    "gatewaySubnetRef": "[concat(variables('vnetID'),'/subnets/','GatewaySubnet')]",
+    "vpnType": "RouteBased",
+    "gatewayName": "PexipVPNGateway",
+    "gatewaySku": "Basic",
+    "gatewayPublicIPName": "VPNGWPublicIP",
+    "networkAPIVersion": "2017-03-01"
+  },
+    "resources": [
+      {
+        "apiVersion": "[variables('networkAPIVersion')]",
+        "type": "Microsoft.Network/virtualNetworks",
+        "name": "[variables('virtualNetworkName')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": [
+              "[parameters('azureVNetAddressPrefix')]"
+            ]
+          },
+          "subnets": [
+            {
+              "name": "[variables('serverSubnetName')]",
+              "properties": {
+                "addressPrefix": "[parameters('subnetPrefix')]"
+              }
+            },
+            {
+              "name": "GatewaySubnet",
+              "properties": {
+                "addressPrefix": "[parameters('gatewaySubnetPrefix')]"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "[variables('networkAPIVersion')]",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('gatewayPublicIPName')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "publicIPAllocationMethod": "Dynamic"
+        }
+      },
+      {
+        "apiVersion": "[variables('networkAPIVersion')]",
+        "type": "Microsoft.Network/virtualNetworkGateways",
+        "name": "[variables('gatewayName')]",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/publicIPAddresses/', variables('gatewayPublicIPName'))]",
+          "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "subnet": {
+                  "id": "[variables('gatewaySubnetRef')]"
+                },
+                "publicIPAddress": {
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('gatewayPublicIPName'))]"
+                }
+              },
+              "name": "vnetGatewayConfig"
+            }
+          ],
+          "sku": {
+            "name": "[variables('gatewaySku')]",
+            "tier": "[variables('gatewaySku')]"
+          },
+          "gatewayType": "Vpn",
+          "vpnType": "[variables('vpnType')]",
+          "enableBgp": "false"
+        }
+      }
+    ]
+}

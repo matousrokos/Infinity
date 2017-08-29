@@ -1,0 +1,59 @@
+﻿{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "azureVNetAddressPrefix": {
+            "type": "string",
+            "defaultValue": "10.3.0.0/23",
+            "metadata": {
+                "description": "CIDR block representing the address space of the Azure VNet"
+            }
+        },
+      "subnetPrefix": {
+        "type": "string",
+        "defaultValue": "10.3.0.0/24",
+        "metadata": {
+          "description": "CIDR block for VM subnet, subset of azureVNetAddressPrefix address space"
+        }
+      },
+      "proxyNodesSubnetPrefix": {
+        "type": "string",
+        "defaultValue": "10.3.1.0/24"
+      }
+    },
+  "variables": {
+    "virtualNetworkName": "PexipVNET",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+    "serverSubnetName": "PexipServers",
+    "networkAPIVersion": "2017-03-01"
+  },
+    "resources": [
+      {
+        "apiVersion": "[variables('networkAPIVersion')]",
+        "type": "Microsoft.Network/virtualNetworks",
+        "name": "[variables('virtualNetworkName')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": [
+              "[parameters('azureVNetAddressPrefix')]"
+            ]
+          },
+          "subnets": [
+            {
+              "name": "[variables('serverSubnetName')]",
+              "properties": {
+                "addressPrefix": "[parameters('subnetPrefix')]"
+              }
+            },
+            {
+              "name": "GatewaySubnet",
+              "properties": {
+                "addressPrefix": "[parameters('proxyNodesSubnetPrefix')]"
+              }
+            }
+          ]
+        }
+      }
+    ]
+}

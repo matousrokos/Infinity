@@ -9,10 +9,10 @@
       "value": "P@$$word1234"
     },
     "virtualNetworkLocation": {
-      "value": "westeurope"
+      "value": "West Europe"
     },
     "virtualNetworkResourceGroup": {
-      "value": "PexipInfinity"
+      "value": "PexipDeploy"
     },
     "pexipConfNodeCount": {
       "value": 2
@@ -24,13 +24,25 @@
       "value": "P@$$word1234"
     },
     "virtualNetworkName": {
-      "value": "vNET"
+      "value": "PexipTestVNET"
     },
     "pexipMGMTNodeSubnetName": {
-      "value": "default"
+      "value": "Conf"
     },
     "pexipConfNodeSubetName": {
-      "value": "default"
+      "value": "Conf"
+    },
+    "pexipMGMTNodeVHDUri": {
+      "value": "https://pexipimages.blob.core.windows.net/images/pexip-infinity-15-0-0-35724-0-0-management-node.vhd"
+    },
+    "pexipConfNodeVHDUri": {
+      "value": "https://pexipimages.blob.core.windows.net/images/pexip-infinity-15-0-0-35724-0-0-conferencing-node.vhd"
+    },
+    "pexipProxyConfNodeSubetName": {
+      "value": "ProxyConf"
+    },
+    "pexipProxyConfNodeCount": {
+      "value": 2
     }
   }
 }

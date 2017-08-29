@@ -49,6 +49,12 @@
     "pexipConfNodeAdminPassword": {
       "type": "securestring",
       "minLength": 12
+    },
+    "pexipProxyConfNodeSubetName": {
+      "type": "string"
+    },
+    "pexipProxyConfNodeCount": {
+      "type": "int"
     }
   },
   "variables": {
@@ -64,6 +70,9 @@
     "pexipConfNodeOSDiskName": "pexipConfNodeOSDisk",
     "pexipConfNodeVmSize": "Standard_D2_v2",
     "pexipConfNodeSubnetRef": "[concat(variables('vNETID'), '/subnets/', parameters('pexipConfNodeSubetName'))]",
+    "pexipProxyConfAVSName": "PxpProxyConfAVSet",
+    "pexipProxyConfNodeName": "PxpProxyConfNode",
+    "pexipProxyConfNodeSubnetRef": "[concat(variables('vNETID'), '/subnets/', parameters('pexipConfNodeSubetName'))]",
     "networkAPIversion": "2017-03-01",
     "computeAPIversion": "2017-03-30"
   },
@@ -97,7 +106,7 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAllocationMethod": "Dynamic",
+              "privateIPAllocationMethod": "Static",
               "subnet": {
                 "id": "[variables('pexipMGMTNodeSubnetRef')]"
               }
@@ -187,7 +196,7 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAllocationMethod": "Dynamic",
+              "privateIPAllocationMethod": "Static",
               "subnet": {
                 "id": "[variables('pexipConfNodeSubnetRef')]"
               }
@@ -215,7 +224,7 @@
           "vmSize": "[variables('pexipConfNodeVmSize')]"
         },
         "osProfile": {
-          "computerName": "[variables('pexipMGMTNodeName')]",
+          "computerName": "[variables('pexipConfNodeName')]",
           "adminUsername": "[parameters('pexipMGMTNodeAdminUserName')]",
           "adminPassword": "[parameters('pexipMGMTNodeAdminPassword')]"
         },
@@ -233,6 +242,107 @@
         },
         "availabilitySet": {
           "id": "[resourceId('Microsoft.Compute/availabilitySets/', variables('pexipConfAVSName'))]"
+        }
+      }
+    },
+    {
+      "name": "[variables('pexipProxyConfAVSName')]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "[variables('computeAPIversion')]",
+      "tags": {
+        "displayName": "pexipProxyConfAVS"
+      },
+      "properties": {
+        "platformUpdateDomainCount": 5,
+        "platformFaultDomainCount": 2
+      },
+      "sku": {
+        "name": "Aligned"
+      }
+    },
+    {
+      "name": "[concat(variables('pexipProxyConfNodeName'),copyIndex(),'-IP')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "[variables('networkAPIversion')]",
+      "copy": {
+        "name": "IPCopy",
+        "count": "[parameters('pexipConfNodeCount')]"
+      },
+      "tags": {
+        "displayName": "pexipProxyPublicIP"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+    {
+      "name": "[concat(variables('pexipProxyConfNodeName'),copyIndex(),'-NIC')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "[variables('networkAPIversion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('pexipProxyConfNodeName'), copyIndex(), '-IP'))]"
+      ],
+      "copy": {
+        "name": "NICCopy",
+        "count": "[parameters('pexipConfNodeCount')]"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "subnet": {
+                "id": "[variables('pexipProxyConfNodeSubnetRef')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('pexipProxyConfNodeName'), copyIndex(), '-IP'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(variables('pexipProxyConfNodeName'), copyIndex())]",
+      "apiVersion": "[variables('computeAPIversion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/availabilitySets/', variables('pexipProxyConfAVSName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipProxyConfNodeName'), copyIndex(), '-NIC'))]",
+        "[concat('Microsoft.Compute/images/', variables('pexipConfNodeImageName'))]"
+      ],
+      "copy": {
+        "name": "VMcopy",
+        "count": "[parameters('pexipConfNodeCount')]"
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('pexipConfNodeVmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('pexipProxyConfNodeName')]",
+          "adminUsername": "[parameters('pexipMGMTNodeAdminUserName')]",
+          "adminPassword": "[parameters('pexipMGMTNodeAdminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "id": "[resourceId('Microsoft.Compute/images/', variables('pexipConfNodeImageName'))]"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipProxyConfNodeName'), copyIndex(), '-NIC'))]"
+            }
+          ]
+        },
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets/', variables('pexipProxyConfAVSName'))]"
         }
       }
     }

@@ -1,0 +1,242 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualNetworkName": {
+      "type": "string"
+    },
+    "virtualNetworkLocation": {
+      "type": "string",
+      "allowedValues": [
+        "West Europe",
+        "North Europe",
+        "West US",
+        "West US 2",
+        "East US",
+        "East US 2"
+      ]
+    },
+    "virtualNetworkResourceGroup": {
+      "type": "string"
+    },
+    "pexipMGMTNodeVHDUri": {
+      "type": "string"
+    },
+    "pexipMGMTNodeAdminUserName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pexipMGMTNodeAdminPassword": {
+      "type": "securestring",
+      "minLength": 12
+    },
+    "pexipMGMTNodeSubnetName": {
+      "type": "string"
+    },
+    "pexipConfNodeVHDUri": {
+      "type": "string"
+    },
+    "pexipConfNodeSubetName": {
+      "type": "string"
+    },
+    "pexipConfNodeCount": {
+      "type": "int"
+    },
+    "pexipConfNodeAdminUserName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pexipConfNodeAdminPassword": {
+      "type": "securestring",
+      "minLength": 12
+    }
+  },
+  "variables": {
+    "pexipMGMTNodeImageName": "MGMTNodeImage",
+    "pexipMGMTNodeName": "PxpMGMTNode",
+    "pexipMGMTNodeVmSize": "Standard_D2_v2",
+    "vNETID": "[resourceId(parameters('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
+    "pexipMGMTNodeSubnetRef": "[concat(variables('vNETID'), '/subnets/', parameters('pexipMGMTNodeSubnetName'))]",
+    "pexipMGMTNodeNicName": "[concat(variables('pexipMGMTNodeName'), '-NIC')]",
+    "pexipConfAVSName": "PxpConfAVSet",
+    "pexipConfNodeImageName": "ConfNodeImage",
+    "pexipConfNodeName": "PxpConfNode",
+    "pexipConfNodeOSDiskName": "pexipConfNodeOSDisk",
+    "pexipConfNodeVmSize": "Standard_D2_v2",
+    "pexipConfNodeSubnetRef": "[concat(variables('vNETID'), '/subnets/', parameters('pexipConfNodeSubetName'))]",
+    "networkAPIversion": "2017-03-01",
+    "computeAPIversion": "2017-03-30"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Compute/images",
+      "apiVersion": "[variables('computeAPIversion')]",
+      "name": "[variables('pexipMGMTNodeImageName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "storageProfile": {
+          "osDisk": {
+            "osType": "Linux",
+            "osState": "Generalized",
+            "blobUri": "[parameters('pexipMGMTNodeVHDUri')]",
+            "storageAccountType": "Standard_LRS"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('pexipMGMTNodeNicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[parameters('virtualNetworkLocation')]",
+      "apiVersion": "[variables('networkAPIversion')]",
+      "tags": {
+        "displayName": "pexipMGMTNodeNic"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('pexipMGMTNodeSubnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[variables('pexipMGMTNodeName')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "[variables('computeAPIversion')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('pexipMGMTNodeNicName'))]",
+        "[concat('Microsoft.Compute/images/', variables('pexipMGMTNodeImageName'))]"
+      ],
+      "tags": {
+        "displayName": "pexipMGMTNode"
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('pexipMGMTNodeVmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('pexipMGMTNodeName')]",
+          "adminUsername": "[parameters('pexipMGMTNodeAdminUserName')]",
+          "adminPassword": "[parameters('pexipMGMTNodeAdminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "id": "[resourceId('Microsoft.Compute/images/', variables('pexipMGMTNodeImageName'))]"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces/', variables('pexipMGMTNodeNicName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/images",
+      "apiVersion": "[variables('computeAPIversion')]",
+      "name": "[variables('pexipConfNodeImageName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "storageProfile": {
+          "osDisk": {
+            "osType": "Linux",
+            "osState": "Generalized",
+            "blobUri": "[parameters('pexipConfNodeVHDUri')]",
+            "storageAccountType": "Standard_LRS"
+          }
+        }
+      }
+    },
+    {
+      "name": "[variables('pexipConfAVSName')]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "[variables('computeAPIversion')]",
+      "tags": {
+        "displayName": "pexipConfAVS"
+      },
+      "properties": {
+        "platformUpdateDomainCount": 5,
+        "platformFaultDomainCount": 2
+      },
+      "sku": {
+        "name": "Aligned"
+      }
+    },
+    {
+      "name": "[concat(variables('pexipConfNodeName'),copyIndex(),'-NIC')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "[variables('networkAPIversion')]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "NICCopy",
+        "count": "[parameters('pexipConfNodeCount')]"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('pexipConfNodeSubnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(variables('pexipConfNodeName'), copyIndex())]",
+      "apiVersion": "[variables('computeAPIversion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/availabilitySets/', variables('pexipConfAVSName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]",
+        "[concat('Microsoft.Compute/images/', variables('pexipConfNodeImageName'))]"
+      ],
+      "copy": {
+        "name": "VMcopy",
+        "count": "[parameters('pexipConfNodeCount')]"
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('pexipConfNodeVmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('pexipConfNodeName')]",
+          "adminUsername": "[parameters('pexipMGMTNodeAdminUserName')]",
+          "adminPassword": "[parameters('pexipMGMTNodeAdminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "id": "[resourceId('Microsoft.Compute/images/', variables('pexipConfNodeImageName'))]"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]"
+            }
+          ]
+        },
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets/', variables('pexipConfAVSName'))]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

@@ -27,12 +27,15 @@
   <ItemGroup>
     <None Include="azuredeploy.json" />
     <None Include="azuredeploy.parametersTemp.json" />
-    <None Include="vMs.json" />
-    <None Include="netwok.json" />
+    <None Include="Master+ConfNodes.json" />
+    <None Include="Master+ConfNodes+EdgeNodes.json" />
+    <None Include="netwok+VPNalt.json" />
     <None Include="Deployment.targets">
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
+    <None Include="network+VPN.json" />
+    <None Include="networkOnly.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>

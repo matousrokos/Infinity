@@ -75,7 +75,7 @@
     "gatewayName": "PexipVPNGateway",
     "gatewayPublicIPName": "VPNGWPublicIP",
     "connectionName": "Azure2On-premConnection",
-    "networkAPIVersion": "2015-06-15"
+    "networkAPIVersion": "2017-03-01"
   },
     "resources": [
       {

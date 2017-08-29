@@ -2,28 +2,28 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "networkingScenario": {
+      "type": "string",
+      "allowedValues": [
+        "networkOnly",
+        "network+VPN"
+      ],
+      "defaultValue": "networkOnly"
+    },
+    "conferenceNodeScenario": {
+      "type": "string",
+      "allowedValues": [
+        "Master+ConfNodes",
+        "Master+ConfNodes+EdgeNodes"
+      ]
+    },
+    
     "pexipMGMTNodeAdminUserName": {
       "type": "string",
       "minLength": 1
     },
     "pexipMGMTNodeAdminPassword": {
       "type": "securestring"
-    },
-    "PexipVersion": {
-      "type": "string",
-      "allowedValues": [
-        "15-0-0-35724-0-0"
-      ],
-      "defaultValue": "15-0-0-35724-0-0"
-    },
-    "virtualNetworkLocation": {
-      "type": "string"
-    },
-    "virtualNetworkResourceGroup": {
-      "type": "string"
-    },
-    "pexipConfNodeCount": {
-      "type": "int"
     },
     "pexipConfNodeAdminUserName": {
       "type": "string",
@@ -35,14 +35,14 @@
   },
   "variables": {
     "networkDeploymentTemplateFileURI": "",
-    "vMsDeploymentTemplateFileURI": ""
-
+    "vMsDeploymentTemplateFileURI": "",
+    "templateAPIVersion": "2017-05-10"
   },
   "resources": [
     {
       "name": "networkDeployment",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
+      "apiVersion": "[variables('networkDeploymentTemplateFileURI')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {

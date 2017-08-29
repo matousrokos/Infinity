@@ -27,9 +27,9 @@
   <ItemGroup>
     <None Include="azuredeploy.json" />
     <None Include="azuredeploy.parametersTemp.json" />
-    <None Include="Master+ConfNodes.json" />
-    <None Include="Master+ConfNodes+EdgeNodes.json" />
-    <None Include="netwok+VPNalt.json" />
+    <None Include="Master-ConfNodes.json" />
+    <None Include="Master-ConfNodes-EdgeNodes.json" />
+    <None Include="netwok-VPNalt.json" />
     <None Include="Deployment.targets">
       <Visible>False</Visible>
     </None>

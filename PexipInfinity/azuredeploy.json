@@ -6,15 +6,15 @@
       "type": "string",
       "allowedValues": [
         "networkOnly",
-        "network+VPN"
+        "network-VPN"
       ],
       "defaultValue": "networkOnly"
     },
     "conferenceNodeScenario": {
       "type": "string",
       "allowedValues": [
-        "Master+ConfNodes",
-        "Master+ConfNodes+EdgeNodes"
+        "Master-ConfNodes",
+        "Master-ConfNodes-EdgeNodes"
       ]
     },
     

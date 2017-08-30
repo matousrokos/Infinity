@@ -1,33 +1,34 @@
 ﻿{
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-      "azureVNetAddressPrefix": {
-            "type": "string",
-            "defaultValue": "10.3.0.0/16",
-            "metadata": {
-                "description": "CIDR block representing the address space of the Azure VNet"
-            }
-        },
-        "subnetPrefix": {
-            "type": "string",
-            "defaultValue": "10.3.1.0/24",
-            "metadata": {
-                "description": "CIDR block for VM subnet, subset of azureVNetAddressPrefix address space"
-            }
-        },
-        "gatewaySubnetPrefix": {
-            "type": "string",
-            "defaultValue": "10.3.200.0/29",
-            "metadata": {
-                "description": "CIDR block for gateway subnet, subset of azureVNetAddressPrefix address space"
-            }
-        }
+  "parameters": {
+    "azureVNetAddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "CIDR block representing the address space of the Azure VNet"
+      }
     },
+    "subnetPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "CIDR block for VM subnet, subset of azureVNetAddressPrefix address space"
+      }
+    },
+    "edgeNodesSubnetPrefix": {
+      "type": "string"
+    },
+    "gatewaySubnetPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "CIDR block for gateway subnet, subset of azureVNetAddressPrefix address space"
+      }
+    }
+  },
   "variables": {
     "virtualNetworkName": "PexipVNET",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
-    "serverSubnetName": "PexipServers",
+    "serverSubnetName": "PexipConfNodes",
+    "edgeSubnetName": "PexipEdgeConfNodes",
     "gatewaySubnetRef": "[concat(variables('vnetID'),'/subnets/','GatewaySubnet')]",
     "vpnType": "RouteBased",
     "gatewayName": "PexipVPNGateway",
@@ -53,6 +54,12 @@
               "properties": {
                 "addressPrefix": "[parameters('subnetPrefix')]"
               }
+            },
+            {
+            "name": "[variables('edgeSubnetName')]",
+            "properties": {
+              "addressPrefix": "[parameters('edgeNodesSubnetPrefix')]"
+            }
             },
             {
               "name": "GatewaySubnet",

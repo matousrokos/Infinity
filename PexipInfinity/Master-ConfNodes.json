@@ -5,17 +5,6 @@
     "virtualNetworkName": {
       "type": "string"
     },
-    "virtualNetworkLocation": {
-      "type": "string",
-      "allowedValues": [
-        "West Europe",
-        "North Europe",
-        "West US",
-        "West US 2",
-        "East US",
-        "East US 2"
-      ]
-    },
     "virtualNetworkResourceGroup": {
       "type": "string"
     },
@@ -87,7 +76,7 @@
     {
       "name": "[variables('pexipMGMTNodeNicName')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "location": "[parameters('virtualNetworkLocation')]",
+      "location": "[resourceGroup().location]",
       "apiVersion": "[variables('networkAPIversion')]",
       "tags": {
         "displayName": "pexipMGMTNodeNic"

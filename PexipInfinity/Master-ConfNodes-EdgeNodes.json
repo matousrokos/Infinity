@@ -5,17 +5,6 @@
     "virtualNetworkName": {
       "type": "string"
     },
-    "virtualNetworkLocation": {
-      "type": "string",
-      "allowedValues": [
-        "West Europe",
-        "North Europe",
-        "West US",
-        "West US 2",
-        "East US",
-        "East US 2"
-      ]
-    },
     "virtualNetworkResourceGroup": {
       "type": "string"
     },
@@ -50,10 +39,10 @@
       "type": "securestring",
       "minLength": 12
     },
-    "pexipProxyConfNodeSubetName": {
+    "pexipEdgeConfNodeSubetName": {
       "type": "string"
     },
-    "pexipProxyConfNodeCount": {
+    "pexipEdgeConfNodeCount": {
       "type": "int"
     }
   },
@@ -70,9 +59,9 @@
     "pexipConfNodeOSDiskName": "pexipConfNodeOSDisk",
     "pexipConfNodeVmSize": "Standard_D2_v2",
     "pexipConfNodeSubnetRef": "[concat(variables('vNETID'), '/subnets/', parameters('pexipConfNodeSubetName'))]",
-    "pexipProxyConfAVSName": "PxpProxyConfAVSet",
-    "pexipProxyConfNodeName": "PxpProxyConfNode",
-    "pexipProxyConfNodeSubnetRef": "[concat(variables('vNETID'), '/subnets/', parameters('pexipConfNodeSubetName'))]",
+    "pexipEdgeConfAVSName": "PxpEdgeConfAVSet",
+    "pexipEdgeConfNodeName": "PxpEdgeConfNode",
+    "pexipEdgeConfNodeSubnetRef": "[concat(variables('vNETID'), '/subnets/', parameters('pexipConfNodeSubetName'))]",
     "networkAPIversion": "2017-03-01",
     "computeAPIversion": "2017-03-30"
   },
@@ -246,12 +235,12 @@
       }
     },
     {
-      "name": "[variables('pexipProxyConfAVSName')]",
+      "name": "[variables('pexipEdgeConfAVSName')]",
       "type": "Microsoft.Compute/availabilitySets",
       "location": "[resourceGroup().location]",
       "apiVersion": "[variables('computeAPIversion')]",
       "tags": {
-        "displayName": "pexipProxyConfAVS"
+        "displayName": "pexipEdgeConfAVS"
       },
       "properties": {
         "platformUpdateDomainCount": 5,
@@ -262,7 +251,7 @@
       }
     },
     {
-      "name": "[concat(variables('pexipProxyConfNodeName'),copyIndex(),'-IP')]",
+      "name": "[concat(variables('pexipEdgeConfNodeName'),copyIndex(),'-IP')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "location": "[resourceGroup().location]",
       "apiVersion": "[variables('networkAPIversion')]",
@@ -271,19 +260,19 @@
         "count": "[parameters('pexipConfNodeCount')]"
       },
       "tags": {
-        "displayName": "pexipProxyPublicIP"
+        "displayName": "pexipEdgePublicIP"
       },
       "properties": {
         "publicIPAllocationMethod": "Static"
       }
     },
     {
-      "name": "[concat(variables('pexipProxyConfNodeName'),copyIndex(),'-NIC')]",
+      "name": "[concat(variables('pexipEdgeConfNodeName'),copyIndex(),'-NIC')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "[variables('networkAPIversion')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('pexipProxyConfNodeName'), copyIndex(), '-IP'))]"
+        "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('pexipEdgeConfNodeName'), copyIndex(), '-IP'))]"
       ],
       "copy": {
         "name": "NICCopy",
@@ -296,10 +285,10 @@
             "properties": {
               "privateIPAllocationMethod": "Static",
               "subnet": {
-                "id": "[variables('pexipProxyConfNodeSubnetRef')]"
+                "id": "[variables('pexipEdgeConfNodeSubnetRef')]"
               },
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('pexipProxyConfNodeName'), copyIndex(), '-IP'))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('pexipEdgeConfNodeName'), copyIndex(), '-IP'))]"
               }
             }
           }
@@ -308,12 +297,12 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('pexipProxyConfNodeName'), copyIndex())]",
+      "name": "[concat(variables('pexipEdgeConfNodeName'), copyIndex())]",
       "apiVersion": "[variables('computeAPIversion')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/availabilitySets/', variables('pexipProxyConfAVSName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipProxyConfNodeName'), copyIndex(), '-NIC'))]",
+        "[concat('Microsoft.Compute/availabilitySets/', variables('pexipEdgeConfAVSName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipEdgeConfNodeName'), copyIndex(), '-NIC'))]",
         "[concat('Microsoft.Compute/images/', variables('pexipConfNodeImageName'))]"
       ],
       "copy": {
@@ -325,7 +314,7 @@
           "vmSize": "[variables('pexipConfNodeVmSize')]"
         },
         "osProfile": {
-          "computerName": "[variables('pexipProxyConfNodeName')]",
+          "computerName": "[variables('pexipEdgeConfNodeName')]",
           "adminUsername": "[parameters('pexipMGMTNodeAdminUserName')]",
           "adminPassword": "[parameters('pexipMGMTNodeAdminPassword')]"
         },
@@ -337,12 +326,12 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipProxyConfNodeName'), copyIndex(), '-NIC'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipEdgeConfNodeName'), copyIndex(), '-NIC'))]"
             }
           ]
         },
         "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets/', variables('pexipProxyConfAVSName'))]"
+          "id": "[resourceId('Microsoft.Compute/availabilitySets/', variables('pexipEdgeConfAVSName'))]"
         }
       }
     }

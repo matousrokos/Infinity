@@ -17,7 +17,34 @@
         "Master-ConfNodes-EdgeNodes"
       ]
     },
-    
+    "azureVNetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.0.0.0/22",
+      "metadata": {
+        "description": "CIDR block representing the address space of the Azure VNet"
+      }
+    },
+    "subnetPrefix": {
+      "type": "string",
+      "defaultValue": "10.0.0.0/24",
+      "metadata": {
+        "description": "CIDR block for Conference Nodes subnet, subset of azureVNetAddressPrefix address space"
+      }
+    },
+    "edgeNodesSubnetPrefix": {
+      "type": "string",
+      "defaultValue": "10.0.1.0/24",
+      "metadata": {
+        "description": "CIDR block for Edge Nodes subnet, subset of azureVNetAddressPrefix address space"
+      }
+    },
+    "gatewaySubnetPrefix": {
+      "type": "string",
+      "defaultValue": "10.0.2.0/29",
+      "metadata": {
+        "description": "CIDR block for gateway subnet, subset of azureVNetAddressPrefix address space"
+      }
+    },
     "pexipMGMTNodeAdminUserName": {
       "type": "string",
       "minLength": 1
@@ -25,12 +52,33 @@
     "pexipMGMTNodeAdminPassword": {
       "type": "securestring"
     },
+    "pexipMGMTNodeVHDUri": {
+      "type": "string"
+    },
     "pexipConfNodeAdminUserName": {
       "type": "string",
       "minLength": 1
     },
     "pexipConfNodeAdminPassword": {
       "type": "securestring"
+    },
+    "pexipMGMTNodeSubnetName": {
+      "type": "string"
+    },
+    "pexipConfNodeVHDUri": {
+      "type": "string"
+    },
+    "pexipConfNodeSubetName": {
+      "type": "string"
+    },
+    "pexipConfNodeCount": {
+      "type": "int"
+    },
+    "pexipEdgeConfNodeCount": {
+      "type": "int"
+    },
+    "pexipEdgeConfNodeSubetName": {
+      "type": "string"
     }
   },
   "variables": {
@@ -50,7 +98,19 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-
+          "azureVNetAddressPrefix": {
+            "value": "[parameters('azureVNetAddressPrefix')]"
+              },
+          "subnetPrefix": {
+            "value": "[parameters('subnetPrefix')]"
+              },
+            
+          "edgeNodesSubnetPrefix": {
+            "value": "[parameters('edgeNodesSubnetPrefix')]"
+              },
+          "gatewaySubnetPrefix": {
+            "value": "[parameters('gatewaySubnetPrefix')]"
+          }
         }
       }
     },
@@ -66,11 +126,49 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
+          "virtualNetworkName": {
+            "value": "PexipVNET"
+          },
+          "virtualNetworkResourceGroup": {
+            "value": "[resourceGroup().name]"
+          },
+          "pexipMGMTNodeAdminUserName": {
+            "value": "[parameters('pexipConfNodeAdminUserName')]"
+          },
+          "pexipMGMTNodeAdminPassword": {
+            "value": "[parameters('pexipConfNodeAdminPassword')]"
+          },
+          "pexipConfNodeAdminUserName": {
+            "value": "[parameters('pexipConfNodeAdminUserName')]"
+          },
+          "pexipConfNodeAdminPassword": {
+            "value": "[parameters('pexipConfNodeAdminPassword')]"
+          },
+          "pexipMGMTNodeSubnetName": {
+            "value": "PexipConfNodes"
+          },
+          "pexipConfNodeVHDUri": {
+            "value": "[parameters('pexipConfNodeVHDUri')]"
+          },
+          "pexipMGMTNodeVHDUri": {
+            "value": "[parameters('pexipMGMTNodeVHDUri')]"
+          },
+          "pexipConfNodeSubetName": {
+            "value": "PexipConfNodes"
+          },
+          "pexipConfNodeCount": {
+            "value": "[parameters('pexipConfNodeCount')]"
+          },
+          "pexipEdgeConfNodeCount": {
+            "value": "[parameters('pexipEdgeConfNodeCount')]"
+          },
+          "pexipEdgeConfNodeSubetName": {
+            "value": "PexipEdgeConfNodes"
+          }
 
         }
       }
     }
-
   ],
   "outputs": {}
 }

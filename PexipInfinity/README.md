@@ -13,6 +13,6 @@ So far you have to copy images to Storage Blobs and create VNET before you trigg
 
 <h2>Kick it off!</h2>
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmatousrokos%2FInfinity%2Fmaster%2FPexipInfinity%2FvMs.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmatousrokos%2FInfinity%2Fmaster%2FPexipInfinity%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>

@@ -15,7 +15,8 @@
       "allowedValues": [
         "Master-ConfNodes",
         "Master-ConfNodes-EdgeNodes"
-      ]
+      ],
+      "defaultValue": "Master-ConfNodes"
     },
     "azureVNetAddressPrefix": {
       "type": "string",
@@ -52,9 +53,6 @@
     "pexipMGMTNodeAdminPassword": {
       "type": "securestring"
     },
-    "pexipMGMTNodeVHDUri": {
-      "type": "string"
-    },
     "pexipConfNodeAdminUserName": {
       "type": "string",
       "minLength": 1
@@ -63,9 +61,6 @@
       "type": "securestring"
     },
     "pexipMGMTNodeSubnetName": {
-      "type": "string"
-    },
-    "pexipConfNodeVHDUri": {
       "type": "string"
     },
     "pexipConfNodeSubetName": {
@@ -82,6 +77,8 @@
     }
   },
   "variables": {
+    "pexipMGMTNodeVHDUri": "https://pexipimages.blob.core.windows.net/images/pexip-infinity-15-0-0-35724-0-0-management-node.vhd",
+    "pexipConfNodeVHDUri": "https://pexipimages.blob.core.windows.net/images/pexip-infinity-15-0-0-35724-0-0-conferencing-node.vhd",
     "networkDeploymentScenarioURI": "[concat('https://raw.githubusercontent.com/matousrokos/Infinity/master/PexipInfinity/', parameters('networkingScenario'),'.json')]",
     "vMsDeploymentScenarioURI": "[concat('https://raw.githubusercontent.com/matousrokos/Infinity/master/PexipInfinity/', parameters('conferenceNodeScenario'),'.json')]",
     "templateAPIVersion": "2017-05-10"
@@ -148,10 +145,10 @@
             "value": "PexipConfNodes"
           },
           "pexipConfNodeVHDUri": {
-            "value": "[parameters('pexipConfNodeVHDUri')]"
+            "value": "[variables('pexipConfNodeVHDUri')]"
           },
           "pexipMGMTNodeVHDUri": {
-            "value": "[parameters('pexipMGMTNodeVHDUri')]"
+            "value": "[variables('pexipMGMTNodeVHDUri')]"
           },
           "pexipConfNodeSubetName": {
             "value": "PexipConfNodes"

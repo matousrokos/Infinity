@@ -26,10 +26,9 @@
   },
   "variables": {
     "virtualNetworkName": "PexipVNET",
-    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
     "serverSubnetName": "PexipConfNodes",
     "edgeSubnetName": "PexipEdgeConfNodes",
-    "networkAPIVersion": "2017-03-01"
+    "networkAPIVersion": "2017-06-01"
   },
     "resources": [
       {
@@ -52,12 +51,6 @@
             },
             {
               "name": "[variables('edgeSubnetName')]",
-              "properties": {
-                "addressPrefix": "[parameters('edgeNodesSubnetPrefix')]"
-              }
-            },
-            {
-              "name": "GatewaySubnet",
               "properties": {
                 "addressPrefix": "[parameters('edgeNodesSubnetPrefix')]"
               }

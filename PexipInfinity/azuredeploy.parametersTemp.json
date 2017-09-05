@@ -8,41 +8,26 @@
     "pexipMGMTNodeAdminPassword": {
       "value": "P@$$word1234"
     },
-    "virtualNetworkLocation": {
-      "value": "West Europe"
-    },
-    "virtualNetworkResourceGroup": {
-      "value": "PexipDeploy"
-    },
-    "pexipConfNodeCount": {
-      "value": 2
-    },
     "pexipConfNodeAdminUserName": {
       "value": "matous"
     },
     "pexipConfNodeAdminPassword": {
       "value": "P@$$word1234"
     },
-    "virtualNetworkName": {
-      "value": "PexipTestVNET"
-    },
     "pexipMGMTNodeSubnetName": {
-      "value": "Conf"
+      "value": "pexip"
     },
     "pexipConfNodeSubetName": {
-      "value": "Conf"
+      "value": "pexip"
     },
-    "pexipMGMTNodeVHDUri": {
-      "value": "https://pexipimages.blob.core.windows.net/images/pexip-infinity-15-0-0-35724-0-0-management-node.vhd"
-    },
-    "pexipConfNodeVHDUri": {
-      "value": "https://pexipimages.blob.core.windows.net/images/pexip-infinity-15-0-0-35724-0-0-conferencing-node.vhd"
-    },
-    "pexipProxyConfNodeSubetName": {
-      "value": "ProxyConf"
-    },
-    "pexipProxyConfNodeCount": {
+    "pexipConfNodeCount": {
       "value": 2
+    },
+    "pexipEdgeConfNodeCount": {
+      "value": 2
+    },
+    "pexipEdgeConfNodeSubetName": {
+      "value": "edge"
     }
   }
 }

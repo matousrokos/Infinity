@@ -62,7 +62,7 @@
     "pexipEdgeConfAVSName": "PxpEdgeConfAVSet",
     "pexipEdgeConfNodeName": "PxpEdgeConfNode",
     "pexipEdgeConfNodeSubnetRef": "[concat(variables('vNETID'), '/subnets/', parameters('pexipConfNodeSubetName'))]",
-    "networkAPIversion": "2017-03-01",
+    "networkAPIversion": "2017-06-01",
     "computeAPIversion": "2017-03-30"
   },
   "resources": [
@@ -85,7 +85,7 @@
     {
       "name": "[variables('pexipMGMTNodeNicName')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "location": "[parameters('virtualNetworkLocation')]",
+      "location": "[resourceGroup().location]",
       "apiVersion": "[variables('networkAPIversion')]",
       "tags": {
         "displayName": "pexipMGMTNodeNic"

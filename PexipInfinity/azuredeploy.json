@@ -51,35 +51,28 @@
       "minLength": 1
     },
     "pexipMGMTNodeAdminPassword": {
-      "type": "securestring"
+      "type": "securestring",
+      "minLength": 12
     },
     "pexipConfNodeAdminUserName": {
       "type": "string",
       "minLength": 1
     },
     "pexipConfNodeAdminPassword": {
-      "type": "securestring"
-    },
-    "pexipMGMTNodeSubnetName": {
-      "type": "string"
-    },
-    "pexipConfNodeSubetName": {
-      "type": "string"
+      "type": "securestring",
+      "minLength": 12
     },
     "pexipConfNodeCount": {
       "type": "int"
     },
     "pexipEdgeConfNodeCount": {
       "type": "int"
-    },
-    "pexipEdgeConfNodeSubetName": {
-      "type": "string"
     }
   },
   "variables": {
     "pexipMGMTNodeVHDUri": "https://pexipimages.blob.core.windows.net/images/pexip-infinity-15-0-0-35724-0-0-management-node.vhd",
     "pexipConfNodeVHDUri": "https://pexipimages.blob.core.windows.net/images/pexip-infinity-15-0-0-35724-0-0-conferencing-node.vhd",
-    "networkDeploymentScenarioURI": "[concat('https://raw.githubusercontent.com/matousrokos/Infinity/master/PexipInfinity/', parameters('networkingScenario'),'.json')]",
+    "networkDeploymentScenarioURI": "[concat('https://raw.githubusercontent.com/matousrokos/Infinity/master/PexipInfinity/',parameters('networkingScenario'),'.json')]",
     "vMsDeploymentScenarioURI": "[concat('https://raw.githubusercontent.com/matousrokos/Infinity/master/PexipInfinity/', parameters('conferenceNodeScenario'),'.json')]",
     "templateAPIVersion": "2017-05-10"
   },
@@ -115,7 +108,7 @@
       "name": "vMsDeployment",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('templateAPIVersion')]",
-      "dependsOn": "Microsoft.Resources/deployments/networkDeployment",
+      "dependsOn": "[concat('Microsoft.Resources/deployments/','networkDeployment')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -162,7 +155,6 @@
           "pexipEdgeConfNodeSubetName": {
             "value": "PexipEdgeConfNodes"
           }
-
         }
       }
     }

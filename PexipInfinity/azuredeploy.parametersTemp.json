@@ -14,20 +14,11 @@
     "pexipConfNodeAdminPassword": {
       "value": "P@$$word1234"
     },
-    "pexipMGMTNodeSubnetName": {
-      "value": "pexip"
-    },
-    "pexipConfNodeSubetName": {
-      "value": "pexip"
-    },
     "pexipConfNodeCount": {
       "value": 2
     },
     "pexipEdgeConfNodeCount": {
-      "value": 2
-    },
-    "pexipEdgeConfNodeSubetName": {
-      "value": "edge"
+      "value": 0
     }
   }
 }

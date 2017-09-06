@@ -38,6 +38,12 @@
     "pexipConfNodeAdminPassword": {
       "type": "securestring",
       "minLength": 12
+    },
+    "pexipEdgeConfNodeCount": {
+      "type": "int"
+    },
+    "pexipEdgeConfNodeSubetName": {
+      "type": "string"
     }
   },
   "variables": {

@@ -108,7 +108,8 @@
       "name": "vMsDeployment",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('templateAPIVersion')]",
-      "dependsOn": "[concat('Microsoft.Resources/deployments/','networkDeployment')]",
+      "dependsOn":
+        ["Microsoft.Resources/deployments/networkDeployment"],
       "properties": {
         "mode": "Incremental",
         "templateLink": {

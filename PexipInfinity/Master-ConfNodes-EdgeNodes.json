@@ -53,6 +53,7 @@
     "vNETID": "[resourceId(parameters('virtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
     "pexipMGMTNodeSubnetRef": "[concat(variables('vNETID'), '/subnets/', parameters('pexipMGMTNodeSubnetName'))]",
     "pexipMGMTNodeNicName": "[concat(variables('pexipMGMTNodeName'), '-NIC')]",
+    "pexipMGMTNodePublicIPName": "[concat(variables('pexipMGMTNodeName'), '-IP')]",
     "pexipConfAVSName": "PxpConfAVSet",
     "pexipConfNodeImageName": "ConfNodeImage",
     "pexipConfNodeName": "PxpConfNode",
@@ -63,7 +64,8 @@
     "pexipEdgeConfNodeName": "PxpEdgeConfNode",
     "pexipEdgeConfNodeSubnetRef": "[concat(variables('vNETID'), '/subnets/', parameters('pexipConfNodeSubetName'))]",
     "networkAPIversion": "2017-06-01",
-    "computeAPIversion": "2017-03-30"
+    "computeAPIversion": "2017-03-30",
+    "templateAPIVersion": "2017-05-10"
   },
   "resources": [
     {
@@ -83,10 +85,26 @@
       }
     },
     {
+      "name": "[variables('pexipMGMTNodePublicIPName')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "[variables('networkAPIversion')]",
+      "dependsOn": [],
+      "tags": {
+        "displayName": "pexipMGMTNodePublicIP"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Static"
+      }
+    },
+     {
       "name": "[variables('pexipMGMTNodeNicName')]",
       "type": "Microsoft.Network/networkInterfaces",
       "location": "[resourceGroup().location]",
       "apiVersion": "[variables('networkAPIversion')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('pexipMGMTNodePublicIPName'))]"
+      ],
       "tags": {
         "displayName": "pexipMGMTNodeNic"
       },
@@ -95,9 +113,12 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAllocationMethod": "Static",
+              "privateIPAllocationMethod": "Dynamic",
               "subnet": {
                 "id": "[variables('pexipMGMTNodeSubnetRef')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('pexipMGMTNodePublicIPName'))]"
               }
             }
           }
@@ -185,7 +206,7 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAllocationMethod": "Static",
+              "privateIPAllocationMethod": "Dynamic",
               "subnet": {
                 "id": "[variables('pexipConfNodeSubnetRef')]"
               }
@@ -231,6 +252,32 @@
         },
         "availabilitySet": {
           "id": "[resourceId('Microsoft.Compute/availabilitySets/', variables('pexipConfAVSName'))]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "pexipConfNodeUpdateIP",
+      "apiVersion": "[variables('templateAPIVersion')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('updateip_templateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "nicName": {
+            "value": "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]"
+          },
+          "SubnetRef": {
+            "value": "[variables('pexipConfNodeSubnetRef')]"
+          },
+          "privateIp": {
+            "value": "[reference(concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))).ipConfigurations[0].properties.privateIPAddress]"
+          }
         }
       }
     },
@@ -283,7 +330,7 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAllocationMethod": "Static",
+              "privateIPAllocationMethod": "Dynamic",
               "subnet": {
                 "id": "[variables('pexipEdgeConfNodeSubnetRef')]"
               },
@@ -334,7 +381,34 @@
           "id": "[resourceId('Microsoft.Compute/availabilitySets/', variables('pexipEdgeConfAVSName'))]"
         }
       }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "[concat('updateip')]",
+      "apiVersion": "[variables('templateAPIVersion')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('updateip_templateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "nicName": {
+            "value": "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]"
+          },
+          "SubnetRef": {
+            "value": "[variables('pexipConfNodeSubnetRef')]"
+          },
+          "privateIp": {
+            "value": "[reference(concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))).ipConfigurations[0].properties.privateIPAddress]"
+          }
+        }
+      }
     }
+
   ],
   "outputs": {
   }

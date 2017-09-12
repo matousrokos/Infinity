@@ -36,6 +36,7 @@
     <Content Include="Deploy-AzureResourceGroup.ps1" />
     <None Include="network-VPN.json" />
     <None Include="networkOnly.json" />
+    <None Include="update-IP.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>

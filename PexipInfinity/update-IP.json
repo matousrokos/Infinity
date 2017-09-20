@@ -21,8 +21,6 @@
       "name": "[parameters('nicName')]",
       "apiVersion": "[variables('networkAPIVersion')]",
       "location": "[resourceGroup().location]",
-      "dependsOn": [
-      ],
       "properties": {
         "ipConfigurations": [
           {

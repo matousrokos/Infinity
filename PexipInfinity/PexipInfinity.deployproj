@@ -27,6 +27,7 @@
   <ItemGroup>
     <None Include="azuredeploy.json" />
     <None Include="azuredeploy.parametersTemp.json" />
+    <None Include="Master-ConfNodes-Extension.json" />
     <None Include="Master-ConfNodes.json" />
     <None Include="Master-ConfNodes-EdgeNodes.json" />
     <None Include="netwok-VPNalt.json" />
@@ -36,6 +37,7 @@
     <Content Include="Deploy-AzureResourceGroup.ps1" />
     <None Include="network-VPN.json" />
     <None Include="networkOnly.json" />
+    <None Include="Scripts\EnableWebAccess.py" />
     <None Include="update-IP.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />

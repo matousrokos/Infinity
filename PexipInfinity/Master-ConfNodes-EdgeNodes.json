@@ -63,6 +63,7 @@
     "pexipEdgeConfAVSName": "PxpEdgeConfAVSet",
     "pexipEdgeConfNodeName": "PxpEdgeConfNode",
     "pexipEdgeConfNodeSubnetRef": "[concat(variables('vNETID'), '/subnets/', parameters('pexipConfNodeSubetName'))]",
+    "updateIPTempURI": "https://raw.githubusercontent.com/matousrokos/Infinity/master/PexipInfinity/update-IP.json",
     "networkAPIversion": "2017-06-01",
     "computeAPIversion": "2017-03-30",
     "templateAPIVersion": "2017-05-10"
@@ -392,7 +393,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('updateip_templateUri')]",
+          "uri": "[variables('updateIPTempURI')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -418,7 +419,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('updateip_templateUri')]",
+          "uri": "[variables('updateIPTempURI')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -444,7 +445,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('updateip_templateUri')]",
+          "uri": "[variables('updateIPTempURI')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

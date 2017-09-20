@@ -388,7 +388,7 @@
       "name": "[concat('updateip', variables('pexipMGMTNodeName'))]",
       "apiVersion": "[variables('templateAPIVersion')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipMGMTNodeNicName')))]"
+        "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipMGMTNodeNicName')))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -398,7 +398,7 @@
         },
         "parameters": {
           "nicName": {
-            "value": "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipMGMTNodeNicName')))]"
+            "value": "[concat(variables('pexipMGMTNodeName'), copyIndex(), '-NIC')]"
           },
           "SubnetRef": {
             "value": "[variables('pexipMGMTNodeSubnetRef')]"
@@ -414,7 +414,7 @@
       "name": "[concat('updateip', variables('pexipConfNodeName'))]",
       "apiVersion": "[variables('templateAPIVersion')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -424,7 +424,7 @@
         },
         "parameters": {
           "nicName": {
-            "value": "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]"
+            "value": "[concat(variables('pexipConfNodeName'), copyIndex(), '-NIC')]"
           },
           "SubnetRef": {
             "value": "[variables('pexipConfNodeSubnetRef')]"
@@ -440,7 +440,7 @@
       "name": "[concat('updateip', variables('pexipEdgeConfNodeName'))]",
       "apiVersion": "[variables('templateAPIVersion')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipEdgeConfNodeName'), copyIndex(), '-NIC'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipEdgeConfNodeName'), copyIndex(), '-NIC'))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -450,7 +450,7 @@
         },
         "parameters": {
           "nicName": {
-            "value": "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipEdgeConfNodeName'), copyIndex(), '-NIC'))]"
+            "value": "[concat(variables('pexipEdgeConfNodeName'), copyIndex(), '-NIC')]"
           },
           "SubnetRef": {
             "value": "[variables('pexipEdgeConfNodeSubnetRef')]"

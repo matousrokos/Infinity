@@ -257,32 +257,6 @@
       }
     },
     {
-      "type": "Microsoft.Resources/deployments",
-      "name": "pexipConfNodeUpdateIP",
-      "apiVersion": "[variables('templateAPIVersion')]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('updateip_templateUri')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "nicName": {
-            "value": "[concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]"
-          },
-          "SubnetRef": {
-            "value": "[variables('pexipConfNodeSubnetRef')]"
-          },
-          "privateIp": {
-            "value": "[reference(concat('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))).ipConfigurations[0].properties.privateIPAddress]"
-          }
-        }
-      }
-    },
-    {
       "name": "[variables('pexipEdgeConfAVSName')]",
       "type": "Microsoft.Compute/availabilitySets",
       "location": "[resourceGroup().location]",

@@ -388,7 +388,8 @@
       "name": "[concat('updateip', variables('pexipMGMTNodeName'))]",
       "apiVersion": "[variables('templateAPIVersion')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipMGMTNodeNicName')))]"
+        "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipMGMTNodeNicName')))]",
+        "[concat('Microsoft.Compute/virtualMachines/', variables('pexipMGMTNodeName'))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -414,7 +415,8 @@
       "name": "[concat('updateip', variables('pexipConfNodeName'))]",
       "apiVersion": "[variables('templateAPIVersion')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipConfNodeName'), copyIndex(), '-NIC'))]",
+        "[concat('Microsoft.Compute/virtualMachines/', variables('pexipConfNodeName'))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -440,7 +442,8 @@
       "name": "[concat('updateip', variables('pexipEdgeConfNodeName'))]",
       "apiVersion": "[variables('templateAPIVersion')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipEdgeConfNodeName'), copyIndex(), '-NIC'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces/', concat(variables('pexipEdgeConfNodeName'), copyIndex(), '-NIC'))]",
+        "[concat('Microsoft.Compute/virtualMachines/', variables('pexipEdgeConfNodeName'))]"
       ],
       "properties": {
         "mode": "Incremental",
